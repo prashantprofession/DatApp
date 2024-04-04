@@ -1,4 +1,5 @@
-﻿using API.Data;
+﻿using System.Security.Claims;
+using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -24,16 +25,26 @@ public class UsersController : BaseApiController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
     {
-        return Ok(await _userRepository.GetMembersAsync());
-        var users = await _userRepository.GetUsersAsync();
-        var usersReturn = _mapper.Map<IEnumerable<MemberDTO>>(users);
-        return Ok(usersReturn);
+        return Ok(await _userRepository.GetMembersAsync());        
     }
    
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDTO>> GetUserByName(string username)
     {
         return await _userRepository.GetMemberByNameAsync(username);      
+    }
+
+    [HttpPut]
+
+    public async Task<ActionResult> UpdateUser(MemberUpdateDTO memberUpdateDTO)
+    {
+        var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var user = await this._userRepository.GetUserByUserNameAsync(username);
+        if (user == null) return NotFound();
+        _mapper.Map(memberUpdateDTO, user);
+        if (await this._userRepository.SaveAllAsync())
+            return NoContent();
+        return BadRequest("Failed to updte user");
     }
 
 }
