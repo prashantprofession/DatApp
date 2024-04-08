@@ -4,6 +4,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 
 
 
@@ -16,13 +17,15 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     BsDropdownModule.forRoot(),
     NgxSpinnerModule.forRoot({
       type:"ball-atom"
-    })
+    }),
+    BsDatepickerModule.forRoot(),
   ],
   exports:[
     ToastrModule,
     BsDropdownModule,
     TabsModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    BsDatepickerModule
   ]
 })
 export class SharedModule { }
