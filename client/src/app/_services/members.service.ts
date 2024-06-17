@@ -18,6 +18,7 @@ export class MembersService {
   membersCache = new Map();
   userParams: UserParams | undefined;
   user: User | undefined;
+  
   constructor(private http: HttpClient, private accountService: AccountService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
@@ -77,6 +78,17 @@ export class MembersService {
         this.members[index] = member;
       })
     );
+  }
+
+  addLike(userName: string) {
+    return this.http.post(this.baseUrl + 'likes/' + userName, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pagesize : number) {
+    let params = this.getPaginationHeaders(pageNumber, pagesize);
+    params = params.append('predicate', predicate);
+    return this.getPaginatedResult<Member[]>(this.baseUrl + 'likes', params);
+    //return this.http.get<Member[]>(this.baseUrl + 'likes?predicate=' + predicate );
   }
 
   private getPaginatedResult<T>(url: string, params: HttpParams) {
